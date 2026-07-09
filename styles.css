@@ -1289,6 +1289,26 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-2px);
 }
 
+.learned-word-badge {
+    background: rgba(6, 182, 212, 0.05);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.learned-word-badge:hover {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.4);
+    transform: translateY(-2px);
+}
+
 .struggled-word-sound-icon {
     opacity: 0.6;
     transition: var(--transition);

@@ -967,6 +967,38 @@ function renderStatsUI() {
         
         container.appendChild(badge);
     });
+
+    // Renderizar palavras já aprendidas
+    const learnedWordsContainer = document.getElementById('learned-words-container');
+    if (learnedWordsContainer) {
+        learnedWordsContainer.innerHTML = '';
+        
+        const learnedWords = [];
+        const maxDay = state.lastCompletedDay;
+        for (let d = 1; d <= maxDay; d++) {
+            const dayWords = getWordsForDay(d);
+            learnedWords.push(...dayWords);
+        }
+        
+        if (learnedWords.length === 0) {
+            learnedWordsContainer.innerHTML = '<p class="empty-list-msg">Você ainda não concluiu nenhum dia de estudos.</p>';
+        } else {
+            learnedWords.forEach(wordObj => {
+                const badge = document.createElement('div');
+                badge.className = 'learned-word-badge';
+                badge.innerHTML = `
+                    <span>${wordObj.word} (${wordObj.translation})</span>
+                    <span class="struggled-word-sound-icon">🔊</span>
+                `;
+                
+                badge.addEventListener('click', () => {
+                    speakText(wordObj.word);
+                });
+                
+                learnedWordsContainer.appendChild(badge);
+            });
+        }
+    }
 }
 
 function removeStruggledWord(id) {
