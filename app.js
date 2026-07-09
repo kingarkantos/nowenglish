@@ -452,8 +452,37 @@ function renderStudyWord() {
     // Insere dados no card (Verso)
     document.getElementById('study-word-back').textContent = wordObj.word;
     document.getElementById('study-translation').textContent = wordObj.translation;
-    document.getElementById('study-example-eng').textContent = wordObj.example;
-    document.getElementById('study-example-por').textContent = wordObj.exampleTranslation;
+    // Renderiza múltiplos exemplos de uso
+    const studyExamplesList = document.getElementById('study-examples-list');
+    if (studyExamplesList) {
+        studyExamplesList.innerHTML = '';
+        const list = wordObj.examples || [
+            { eng: wordObj.example, por: wordObj.exampleTranslation }
+        ];
+        
+        list.forEach(ex => {
+            const item = document.createElement('div');
+            item.className = 'example-item';
+            item.innerHTML = `
+                <div class="example-item-header">
+                    <span class="example-english-text">${ex.eng}</span>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        ${ex.source ? `<span class="example-source">${ex.source}</span>` : ''}
+                        <button class="example-item-play-btn" title="Ouvir pronúncia">🔊</button>
+                    </div>
+                </div>
+                <span class="example-translation-text">${ex.por}</span>
+            `;
+            
+            // Adiciona listener para tocar áudio da frase
+            item.querySelector('.example-item-play-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                speakText(ex.eng);
+            });
+            
+            studyExamplesList.appendChild(item);
+        });
+    }
     
     // Controle de botões de navegação
     document.getElementById('study-btn-prev').disabled = session.currentIndex === 0;
@@ -554,8 +583,37 @@ function renderReviewWord() {
     // Dados do verso
     document.getElementById('review-word-back').textContent = wordObj.word;
     document.getElementById('review-translation').textContent = wordObj.translation;
-    document.getElementById('review-example-eng').textContent = wordObj.example;
-    document.getElementById('review-example-por').textContent = wordObj.exampleTranslation;
+    // Renderiza múltiplos exemplos de uso
+    const reviewExamplesList = document.getElementById('review-examples-list');
+    if (reviewExamplesList) {
+        reviewExamplesList.innerHTML = '';
+        const list = wordObj.examples || [
+            { eng: wordObj.example, por: wordObj.exampleTranslation }
+        ];
+        
+        list.forEach(ex => {
+            const item = document.createElement('div');
+            item.className = 'example-item';
+            item.innerHTML = `
+                <div class="example-item-header">
+                    <span class="example-english-text">${ex.eng}</span>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        ${ex.source ? `<span class="example-source">${ex.source}</span>` : ''}
+                        <button class="example-item-play-btn" title="Ouvir pronúncia">🔊</button>
+                    </div>
+                </div>
+                <span class="example-translation-text">${ex.por}</span>
+            `;
+            
+            // Adiciona listener para tocar áudio da frase
+            item.querySelector('.example-item-play-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                speakText(ex.eng);
+            });
+            
+            reviewExamplesList.appendChild(item);
+        });
+    }
     
     // Desabilita botões de feedback até revelar tradução
     document.getElementById('review-btn-forgot').disabled = true;
@@ -1071,11 +1129,7 @@ function registerEventListeners() {
         const word = currentSession.words[currentSession.currentIndex].word;
         speakText(word);
     };
-    document.getElementById('study-play-example').onclick = (e) => {
-        e.stopPropagation();
-        const example = currentSession.words[currentSession.currentIndex].example;
-        speakText(example);
-    };
+
 
     document.getElementById('study-btn-next').onclick = handleStudyNext;
     document.getElementById('study-btn-prev').onclick = handleStudyPrev;
@@ -1092,11 +1146,7 @@ function registerEventListeners() {
         const word = currentSession.words[currentSession.currentIndex].word;
         speakText(word);
     };
-    document.getElementById('review-play-example').onclick = (e) => {
-        e.stopPropagation();
-        const example = currentSession.words[currentSession.currentIndex].example;
-        speakText(example);
-    };
+
     document.getElementById('review-btn-forgot').onclick = () => handleReviewFeedback(false);
     document.getElementById('review-btn-remembered').onclick = () => handleReviewFeedback(true);
 
