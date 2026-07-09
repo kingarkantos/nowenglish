@@ -634,6 +634,13 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
 }
 
+.flashcard.glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(20, 20, 35, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
 .flashcard.flipped {
     transform: rotateY(180deg);
 }
@@ -667,8 +674,8 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: space-between;
     align-items: stretch;
 }
-.card-front.hide, .card-back.hide {
-    display: none !important; /* backup to avoid edge rendering bugs */
+.card-back.hide {
+    display: none; /* backup to avoid edge rendering bugs */
 }
 
 /* Sound Icon Button */
