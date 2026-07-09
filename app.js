@@ -468,6 +468,31 @@ function renderStudyWord() {
     
     // Toca o áudio da palavra automaticamente para guiar o estudante
     setTimeout(() => speakText(wordObj.word), 300);
+
+    // Atualiza a lista de palavras já estudadas nesta lição
+    const studyLearnedSection = document.getElementById('study-learned-section');
+    const studyLearnedContainer = document.getElementById('study-learned-container');
+    
+    if (studyLearnedSection && studyLearnedContainer) {
+        if (session.currentIndex === 0) {
+            studyLearnedSection.classList.add('hide');
+        } else {
+            studyLearnedSection.classList.remove('hide');
+            studyLearnedContainer.innerHTML = '';
+            
+            for (let i = 0; i < session.currentIndex; i++) {
+                const w = session.words[i];
+                const badge = document.createElement('div');
+                badge.className = 'learned-word-badge';
+                badge.innerHTML = `
+                    <span>${w.word} (${w.translation})</span>
+                    <span class="struggled-word-sound-icon">🔊</span>
+                `;
+                badge.addEventListener('click', () => speakText(w.word));
+                studyLearnedContainer.appendChild(badge);
+            }
+        }
+    }
 }
 
 function handleStudyNext() {
