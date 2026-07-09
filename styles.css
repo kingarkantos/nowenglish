@@ -203,8 +203,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Common UI Elements: Buttons */
@@ -660,22 +660,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-front {
-    z-index: 2;
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(1px);
     /* Neon glow effect for study */
     border: 1px solid rgba(139, 92, 246, 0.2);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 0 0 15px rgba(139, 92, 246, 0.05);
 }
 
 .card-back {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(1px);
     border: 1px solid rgba(6, 182, 212, 0.2);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 0 0 15px rgba(6, 182, 212, 0.05);
     justify-content: space-between;
     align-items: stretch;
-}
-.card-back.hide {
-    display: none; /* backup to avoid edge rendering bugs */
 }
 
 /* Sound Icon Button */
