@@ -939,34 +939,33 @@ function renderStatsUI() {
     
     if (state.struggledWords.length === 0) {
         container.innerHTML = '<p class="empty-list-msg">Excelente! Você não tem palavras marcadas com dificuldade.</p>';
-        return;
-    }
-    
-    state.struggledWords.forEach(id => {
-        const wordObj = words.find(w => w.id === id);
-        if (!wordObj) return;
-        
-        const badge = document.createElement('div');
-        badge.className = 'struggled-word-badge';
-        badge.innerHTML = `
-            <span>${wordObj.word} (${wordObj.translation})</span>
-            <span class="struggled-word-sound-icon">🔊</span>
-            <span style="color:var(--danger); font-weight:bold; margin-left:5px;">×</span>
-        `;
-        
-        // Ouvir áudio ao clicar no badge
-        badge.addEventListener('click', (e) => {
-            // Se clicar no '×', remove da lista
-            if (e.target.textContent === '×') {
-                e.stopPropagation();
-                removeStruggledWord(id);
-            } else {
-                speakText(wordObj.word);
-            }
+    } else {
+        state.struggledWords.forEach(id => {
+            const wordObj = words.find(w => w.id === id);
+            if (!wordObj) return;
+            
+            const badge = document.createElement('div');
+            badge.className = 'struggled-word-badge';
+            badge.innerHTML = `
+                <span>${wordObj.word} (${wordObj.translation})</span>
+                <span class="struggled-word-sound-icon">🔊</span>
+                <span style="color:var(--danger); font-weight:bold; margin-left:5px;">×</span>
+            `;
+            
+            // Ouvir áudio ao clicar no badge
+            badge.addEventListener('click', (e) => {
+                // Se clicar no '×', remove da lista
+                if (e.target.textContent === '×') {
+                    e.stopPropagation();
+                    removeStruggledWord(id);
+                } else {
+                    speakText(wordObj.word);
+                }
+            });
+            
+            container.appendChild(badge);
         });
-        
-        container.appendChild(badge);
-    });
+    }
 
     // Renderizar palavras já aprendidas
     const learnedWordsContainer = document.getElementById('learned-words-container');
