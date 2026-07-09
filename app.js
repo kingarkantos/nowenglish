@@ -446,8 +446,10 @@ function renderStudyWord() {
     const flashcard = document.getElementById('flashcard');
     flashcard.classList.remove('flipped');
     
-    const cardBack = document.querySelector('.card-back');
+    const cardBack = document.querySelector('#study-view .card-back');
     cardBack.classList.add('hide');
+    const cardFront = document.querySelector('#study-view .card-front');
+    cardFront.classList.remove('hide');
 
     // Insere dados no card (Frente)
     document.getElementById('study-english-word').textContent = wordObj.word;
@@ -526,6 +528,7 @@ function renderReviewWord() {
     const flashcard = document.getElementById('review-flashcard');
     flashcard.classList.remove('flipped');
     document.querySelector('#review-view .card-back').classList.add('hide');
+    document.querySelector('#review-view .card-front').classList.remove('hide');
     
     // Dados da frente
     document.getElementById('review-english-word').textContent = wordObj.word;
@@ -548,6 +551,7 @@ function handleReviewReveal() {
     const flashcard = document.getElementById('review-flashcard');
     flashcard.classList.add('flipped');
     document.querySelector('#review-view .card-back').classList.remove('hide');
+    document.querySelector('#review-view .card-front').classList.add('hide');
     
     // Habilita os botões de resposta
     document.getElementById('review-btn-forgot').disabled = false;
@@ -1007,7 +1011,8 @@ function registerEventListeners() {
     // Módulo de Estudo
     document.getElementById('study-btn-reveal').onclick = () => {
         document.getElementById('flashcard').classList.add('flipped');
-        document.querySelector('.card-back').classList.remove('hide');
+        document.querySelector('#study-view .card-back').classList.remove('hide');
+        document.querySelector('#study-view .card-front').classList.add('hide');
     };
     
     // Tocar áudio das palavras na lição

@@ -667,9 +667,8 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: space-between;
     align-items: stretch;
 }
-
-.card-back.hide {
-    display: none; /* backup to avoid edge rendering bugs */
+.card-front.hide, .card-back.hide {
+    display: none !important; /* backup to avoid edge rendering bugs */
 }
 
 /* Sound Icon Button */
