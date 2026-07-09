@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NowEnglish | Domine as 1000 Palavras mais Comuns</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Elements for Glassmorphic Glow -->
+    <div class="glow-bg">
+        <div class="blob blob-purple"></div>
+        <div class="blob blob-blue"></div>
+        <div class="blob blob-cyan"></div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Now<span>English</span></span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-view="dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Painel
+                </button>
+                <button class="nav-btn" data-view="study" id="nav-btn-study" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Estudar
+                </button>
+                <button class="nav-btn" data-view="review" id="nav-btn-review" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Revisar
+                </button>
+                <button class="nav-btn" data-view="stats">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Progresso
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-container">
+        
+        <!-- DASHBOARD VIEW -->
+        <section id="dashboard-view" class="view-section active">
+            <div class="dashboard-hero">
+                <div class="hero-info">
+                    <h1 class="welcome-title">Olá! Pronto para praticar?</h1>
+                    <p class="welcome-subtitle">Aprenda as 1000 palavras mais usadas no inglês em 90 dias com repetição espaçada e exercícios interativos.</p>
+                </div>
+                <div class="hero-action-card">
+                    <div id="dashboard-status-box">
+                        <!-- Dynamic content here: Review prompt or start day button -->
+                        <span class="badge badge-warning">Ação Necessária</span>
+                        <h3>Revisão Pendente</h3>
+                        <p>Você precisa revisar as palavras de ontem antes de liberar novas palavras do Dia 2.</p>
+                        <button class="btn btn-primary btn-glow" id="hero-action-btn">Iniciar Revisão</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-card glass">
+                    <div class="stat-icon icon-purple">🎓</div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-words-learned">0/1000</span>
+                        <span class="stat-label">Palavras Aprendidas</span>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon icon-blue">📅</div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-current-day">Dia 1</span>
+                        <span class="stat-label">Progresso Atual</span>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon icon-cyan">🎯</div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-avg-score">--%</span>
+                        <span class="stat-label">Nota Média</span>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon icon-green">🔥</div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-streak">0 dias</span>
+                        <span class="stat-label">Ofensiva</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 90 Days Grid -->
+            <div class="grid-section">
+                <div class="section-header">
+                    <h2>Cronograma dos 90 Dias</h2>
+                    <span class="section-desc">Alcance a fluência um dia de cada vez</span>
+                </div>
+                <div class="days-grid" id="days-grid-container">
+                    <!-- JavaScript will generate 90 day cards here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- STUDY VIEW -->
+        <section id="study-view" class="view-section">
+            <div class="view-header">
+                <button class="btn-back" id="study-btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Voltar ao Painel
+                </button>
+                <div class="study-title-wrapper">
+                    <h2 class="view-title" id="study-view-title">Lição: Dia 1</h2>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="study-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text" id="study-progress-text">1 de 11 palavras</span>
+                </div>
+            </div>
+
+            <div class="study-card-wrapper">
+                <div class="flashcard glass" id="flashcard">
+                    <!-- Front of card (English Word & Sound) -->
+                    <div class="card-face card-front">
+                        <div class="card-sound-btn" id="study-play-word" title="Ouvir pronúncia">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                        </div>
+                        <h1 class="flashcard-word" id="study-english-word">understand</h1>
+                        <span class="flashcard-helper">Clique no botão para ouvir ou abaixo para traduzir</span>
+                        <button class="btn btn-primary" id="study-btn-reveal">Revelar Tradução</button>
+                    </div>
+
+                    <!-- Back of card (Translation & Example Sentences) -->
+                    <div class="card-face card-back hide">
+                        <div class="card-back-header">
+                            <h2 class="flashcard-word-back" id="study-word-back">understand</h2>
+                            <div class="card-sound-btn" id="study-play-word-back" title="Ouvir pronúncia">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                            </div>
+                        </div>
+                        
+                        <div class="translation-box">
+                            <span class="label">Tradução</span>
+                            <p class="translation-text" id="study-translation">entender, compreender</p>
+                        </div>
+
+                        <div class="example-box">
+                            <div class="example-header">
+                                <span class="label">Frase de Exemplo</span>
+                                <div class="card-sound-btn-sm" id="study-play-example" title="Ouvir exemplo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                </div>
+                            </div>
+                            <p class="example-english" id="study-example-eng">I don't understand what you are saying.</p>
+                            <p class="example-translation" id="study-example-por">Eu não entendo o que você está dizendo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="study-nav-controls">
+                <button class="btn btn-outline" id="study-btn-prev" disabled>Anterior</button>
+                <button class="btn btn-secondary" id="study-btn-next">Entendi! Próximo</button>
+            </div>
+        </section>
+
+        <!-- REVIEW VIEW -->
+        <section id="review-view" class="view-section">
+            <div class="view-header">
+                <button class="btn-back" id="review-btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Voltar ao Painel
+                </button>
+                <div class="study-title-wrapper">
+                    <h2 class="view-title">Revisão do Dia Anterior</h2>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="review-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text" id="review-progress-text">1 de 11 palavras</span>
+                </div>
+            </div>
+
+            <div class="study-card-wrapper">
+                <div class="flashcard glass" id="review-flashcard">
+                    <div class="card-face card-front">
+                        <div class="card-sound-btn" id="review-play-word">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        </div>
+                        <h1 class="flashcard-word" id="review-english-word">understand</h1>
+                        <span class="flashcard-helper">Tente lembrar da tradução antes de clicar em revelar</span>
+                        <button class="btn btn-primary" id="review-btn-reveal">Revelar Tradução</button>
+                    </div>
+
+                    <div class="card-face card-back hide">
+                        <div class="card-back-header">
+                            <h2 class="flashcard-word-back" id="review-word-back">understand</h2>
+                            <div class="card-sound-btn" id="review-play-word-back">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                            </div>
+                        </div>
+                        
+                        <div class="translation-box">
+                            <span class="label">Tradução</span>
+                            <p class="translation-text" id="review-translation">entender, compreender</p>
+                        </div>
+
+                        <div class="example-box">
+                            <div class="example-header">
+                                <span class="label">Frase de Exemplo</span>
+                                <div class="card-sound-btn-sm" id="review-play-example">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path></svg>
+                                </div>
+                            </div>
+                            <p class="example-english" id="review-example-eng">I don't understand what you are saying.</p>
+                            <p class="example-translation" id="review-example-por">Eu não entendo o que você está dizendo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-feedback-controls">
+                <button class="btn btn-danger btn-shake" id="review-btn-forgot">Esqueci ❌</button>
+                <button class="btn btn-success" id="review-btn-remembered">Lembrei! Obviamente Lembrei ✅</button>
+            </div>
+        </section>
+
+        <!-- EXERCISE VIEW -->
+        <section id="exercise-view" class="view-section">
+            <div class="view-header">
+                <button class="btn-back" id="exercise-btn-back">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Voltar
+                </button>
+                <div class="study-title-wrapper">
+                    <h2 class="view-title" id="exercise-view-title">Exercícios: Dia 1</h2>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="exercise-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text" id="exercise-progress-text">Questão 1 de 10</span>
+                </div>
+            </div>
+
+            <!-- Game Board / Question Container -->
+            <div class="exercise-card glass" id="exercise-card">
+                <!-- MULTIPLE CHOICE QUESTION -->
+                <div class="question-container" id="q-multichoice">
+                    <span class="question-type-badge">Múltipla Escolha</span>
+                    <h2 class="question-text" id="mc-question-text">Qual a tradução para "understand"?</h2>
+                    
+                    <div class="mc-options-grid">
+                        <button class="option-btn glass" data-index="0">Option 1</button>
+                        <button class="option-btn glass" data-index="1">Option 2</button>
+                        <button class="option-btn glass" data-index="2">Option 3</button>
+                        <button class="option-btn glass" data-index="3">Option 4</button>
+                    </div>
+                </div>
+
+                <!-- SPELLING QUESTION -->
+                <div class="question-container hide" id="q-spelling">
+                    <span class="question-type-badge">Escrita / Ortografia</span>
+                    <div class="spelling-instruction">
+                        <h2 class="question-text">Escreva a palavra correspondente à tradução abaixo em inglês:</h2>
+                        <h3 class="spelling-translation" id="sp-translation-text">compreender, entender</h3>
+                    </div>
+                    <div class="spelling-audio-prompt">
+                        <span>Ouça o áudio da palavra se precisar de ajuda:</span>
+                        <button class="btn btn-sm btn-outline card-sound-btn" id="sp-audio-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="spelling-input-wrapper">
+                        <input type="text" id="sp-input" autocomplete="off" placeholder="Digite aqui em inglês..." class="glass-input">
+                        <button class="btn btn-secondary" id="sp-btn-submit">Verificar</button>
+                    </div>
+                </div>
+
+                <!-- FILL IN THE BLANK (CLOZE) QUESTION -->
+                <div class="question-container hide" id="q-cloze">
+                    <span class="question-type-badge">Completar Lacuna</span>
+                    <h2 class="question-text">Complete a frase de exemplo com a palavra correta:</h2>
+                    
+                    <div class="cloze-sentence-box">
+                        <p class="cloze-sentence" id="cloze-sentence-text">I don't <span class="cloze-blank">_______</span> what you are saying.</p>
+                        <p class="cloze-translation" id="cloze-translation-text">Tradução: Eu não entendo o que você está dizendo.</p>
+                    </div>
+
+                    <div class="mc-options-grid" id="cloze-options">
+                        <button class="option-btn glass" data-index="0">Option 1</button>
+                        <button class="option-btn glass" data-index="1">Option 2</button>
+                        <button class="option-btn glass" data-index="2">Option 3</button>
+                        <button class="option-btn glass" data-index="3">Option 4</button>
+                    </div>
+                </div>
+
+                <!-- FEEDBACK DIALOG -->
+                <div class="feedback-banner hide" id="feedback-banner">
+                    <div class="feedback-icon" id="feedback-icon">✔</div>
+                    <div class="feedback-details">
+                        <h4 id="feedback-title">Correto!</h4>
+                        <p id="feedback-desc">Muito bem!</p>
+                    </div>
+                    <button class="btn btn-secondary" id="feedback-btn-next">Avançar ➔</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCORE REPORT VIEW -->
+        <section id="score-view" class="view-section">
+            <div class="score-card glass">
+                <h1 class="score-title">Lição Concluída!</h1>
+                <p class="score-subtitle" id="score-day-label">Resultados do Dia 1</p>
+                
+                <div class="score-circle-wrapper">
+                    <svg class="progress-ring" width="200" height="200">
+                        <circle class="progress-ring-circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="12" fill="transparent" r="80" cx="100" cy="100"/>
+                        <circle class="progress-ring-circle" id="score-ring" stroke="#8b5cf6" stroke-width="12" stroke-dasharray="502.6" stroke-dashoffset="502.6" fill="transparent" r="80" cx="100" cy="100"/>
+                    </svg>
+                    <div class="score-value-box">
+                        <span class="score-percentage" id="score-percent">0%</span>
+                        <span class="score-ratio" id="score-ratio">0/10</span>
+                    </div>
+                </div>
+
+                <div class="grade-box">
+                    <span class="grade-stars" id="score-stars">⭐⭐⭐</span>
+                    <p class="grade-message" id="score-msg">Excelente desempenho!</p>
+                </div>
+
+                <div class="score-actions">
+                    <button class="btn btn-outline" id="score-btn-retry">Refazer Exercícios</button>
+                    <button class="btn btn-secondary btn-glow" id="score-btn-continue">Concluir e Salvar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS VIEW -->
+        <section id="stats-view" class="view-section">
+            <div class="stats-header">
+                <h2>Seu Progresso de Aprendizado</h2>
+                <p class="section-desc">Monitore seu desempenho ao longo da jornada de 3 meses</p>
+            </div>
+
+            <div class="stats-summary-grid">
+                <div class="stat-box-large glass">
+                    <h3>Geral de Conclusão</h3>
+                    <div class="progress-ring-wrapper-large">
+                        <svg class="progress-ring-large" width="160" height="160">
+                            <circle class="progress-ring-circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="10" fill="transparent" r="70" cx="80" cy="80"/>
+                            <circle class="progress-ring-circle" id="stats-overall-ring" stroke="#06b6d4" stroke-width="10" stroke-dasharray="439.8" stroke-dashoffset="439.8" fill="transparent" r="70" cx="80" cy="80"/>
+                        </svg>
+                        <div class="progress-value-box-large">
+                            <span class="progress-percent-large" id="stats-overall-percent">0%</span>
+                            <span class="progress-label-large">Completo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-dashboard-subgrid">
+                    <div class="stat-mini-card glass">
+                        <span class="mini-label">Média Geral de Acertos</span>
+                        <span class="mini-value" id="stats-avg-score-large">--%</span>
+                    </div>
+                    <div class="stat-mini-card glass">
+                        <span class="mini-label">Dias Concluídos</span>
+                        <span class="mini-value" id="stats-completed-days">0 / 90</span>
+                    </div>
+                    <div class="stat-mini-card glass">
+                        <span class="mini-label">Palavras por Revisar</span>
+                        <span class="mini-value" id="stats-words-to-review">0</span>
+                    </div>
+                    <div class="stat-mini-card glass">
+                        <span class="mini-label">Ofensiva Mais Longa</span>
+                        <span class="mini-value" id="stats-longest-streak">0 dias</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Struggled Words List -->
+            <div class="struggled-section glass">
+                <div class="struggled-header">
+                    <h3>Palavras Marcadas Para Prática Adicional</h3>
+                    <p>Palavras que você marcou como "Esqueci" ou errou nos exercícios.</p>
+                </div>
+                <div class="struggled-words-list" id="struggled-words-container">
+                    <p class="empty-list-msg">Excelente! Nenhuma palavra pendente de reforço.</p>
+                </div>
+            </div>
+
+            <!-- Danger Zone / Actions -->
+            <div class="danger-zone glass">
+                <h3>Zona de Administração</h3>
+                <p>Cuidado: Estas ações são irreversíveis e redefinirão seu progresso de estudo.</p>
+                <div class="danger-actions">
+                    <button class="btn btn-danger" id="stats-btn-reset">Redefinir Todo o Progresso</button>
+                    <button class="btn btn-outline" id="stats-btn-mock-days">Simular Dias Concluídos (Testes)</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>© 2026 NowEnglish. Desenvolvido para o aprendizado acelerado de inglês.</p>
+    </footer>
+
+    <!-- Audio Service script and UI code -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

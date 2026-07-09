@@ -1,0 +1,10 @@
+# Local data and cache
+temp_data/
+graphify-out/
+
+# Vercel configuration
+.vercel/
+
+# System files
+.DS_Store
+Thumbs.db
